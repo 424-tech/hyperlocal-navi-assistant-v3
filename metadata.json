@@ -1,0 +1,7 @@
+{
+  "name": "Hyperlocal Navi-Assistant",
+  "description": "An AI-powered navigation assistant for dynamic traffic conditions in congested rural areas, providing intelligent, real-time route suggestions using Gemini.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
