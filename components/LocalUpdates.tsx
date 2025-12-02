@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { getLocalUpdates } from '../services/geminiService';
 import { GeolocationState, GroundingChunk, Language, UserTrafficReport } from '../types';
-import { LoadingSpinner, SourceIcon, UpdatesIcon, ReportIcon, TrashIcon } from './Icons';
+import { LoadingSpinner, SourceIcon, UpdatesIcon, ReportIcon, TrashIcon, UserIcon } from './Icons';
 import { translations } from '../translations';
 
 interface LocalUpdatesProps {
@@ -71,73 +71,127 @@ const LocalUpdates: React.FC<LocalUpdatesProps> = ({ location, manualLocation, l
     localStorage.setItem('scb_navi_user_reports', JSON.stringify(updated));
   };
 
-  const getSeverityColor = (sev: string) => {
+  const getTimeAgo = (timestamp: number) => {
+    const diff = Math.floor((Date.now() - timestamp) / 60000);
+    if (diff < 1) return t.justNow;
+    if (diff < 60) return `${diff} ${t.minsAgo}`;
+    const hours = Math.floor(diff / 60);
+    return `${hours} ${t.hrsAgo}`;
+  };
+
+  const getSeverityStyle = (sev: string) => {
     switch(sev) {
-        case 'heavy': return 'text-red-400 border-red-900 bg-red-900/20';
-        case 'accident': return 'text-red-500 border-red-900 bg-red-900/30 font-bold';
-        case 'closure': return 'text-orange-500 border-orange-900 bg-orange-900/20';
-        case 'moderate': return 'text-yellow-400 border-yellow-900 bg-yellow-900/20';
-        default: return 'text-green-400 border-green-900 bg-green-900/20';
+        case 'heavy': return { 
+            border: 'border-l-4 border-l-red-500', 
+            badge: 'bg-red-900 text-red-200', 
+            icon: '🔴' 
+        };
+        case 'accident': return { 
+            border: 'border-l-4 border-l-red-600 animate-pulse', 
+            badge: 'bg-red-600 text-white font-bold', 
+            icon: '⚠️' 
+        };
+        case 'closure': return { 
+            border: 'border-l-4 border-l-orange-500', 
+            badge: 'bg-orange-600 text-white', 
+            icon: '⛔' 
+        };
+        case 'moderate': return { 
+            border: 'border-l-4 border-l-yellow-500', 
+            badge: 'bg-yellow-900 text-yellow-200', 
+            icon: '🟠' 
+        };
+        default: return { 
+            border: 'border-l-4 border-l-green-500', 
+            badge: 'bg-green-900 text-green-200', 
+            icon: '🟢' 
+        };
     }
   };
 
   return (
-    <div className="animate-fadeIn space-y-8">
+    <div className="animate-fadeIn space-y-8 pb-20">
       
-      {/* User Reports Section */}
-      <div>
-         <h2 className="text-xl font-bold mb-4 text-center flex items-center justify-center gap-2 text-cyan-400">
+      {/* Community Dashboard Section */}
+      <div className="bg-gray-800/40 rounded-xl p-4 border border-gray-700">
+         <h2 className="text-xl font-bold mb-6 text-center flex items-center justify-center gap-2 text-cyan-400 uppercase tracking-widest">
             <ReportIcon /> {t.yourReports}
          </h2>
+         
          {userReports.length > 0 ? (
-            <div className="space-y-3">
-                {userReports.map(report => (
-                    <div key={report.id} className={`p-3 rounded-lg border ${getSeverityColor(report.severity)} relative group`}>
-                         <div className="flex justify-between items-start">
-                             <div>
-                                <span className="uppercase text-xs font-bold tracking-wider opacity-80">{report.severity}</span>
-                                <h4 className="font-bold text-lg">{report.location}</h4>
-                                <p className="text-sm mt-1 opacity-90">{report.description}</p>
-                                <div className="text-xs mt-2 opacity-60">{new Date(report.timestamp).toLocaleString()}</div>
+            <div className="space-y-4">
+                {userReports.map(report => {
+                    const style = getSeverityStyle(report.severity);
+                    return (
+                        <div key={report.id} className={`bg-gray-900 rounded-r-lg p-4 shadow-lg ${style.border} relative group`}>
+                             <div className="flex justify-between items-start mb-2">
+                                <div className={`text-xs px-2 py-1 rounded uppercase tracking-wider ${style.badge}`}>
+                                    {style.icon} {report.severity}
+                                </div>
+                                <span className="text-xs text-gray-500 font-mono">
+                                    {getTimeAgo(report.timestamp)}
+                                </span>
                              </div>
+
+                             <h4 className="font-bold text-lg text-white mb-1">{report.location}</h4>
+                             <p className="text-gray-300 text-sm leading-relaxed mb-3">{report.description}</p>
+                             
+                             <div className="flex justify-between items-center pt-3 border-t border-gray-800">
+                                <div className="flex items-center gap-2">
+                                    <div className="w-6 h-6 rounded-full bg-gray-700 flex items-center justify-center text-xs">
+                                        <UserIcon />
+                                    </div>
+                                    <div className="text-xs text-cyan-400 font-semibold">
+                                        {report.reporterName || 'Anonymous'}
+                                    </div>
+                                </div>
+                                <div className="text-xs text-gray-500 flex items-center gap-1">
+                                    <span>✓ {t.verifiedBy} <strong>{report.verificationCount || 1}</strong> {t.users}</span>
+                                </div>
+                             </div>
+
+                             {/* Delete Button (Only visible on hover/touch) */}
                              <button 
                                 onClick={() => deleteReport(report.id)}
-                                className="text-gray-400 hover:text-red-400 p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="absolute top-2 right-2 text-gray-600 hover:text-red-400 p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                title="Delete Report"
                              >
                                 <TrashIcon />
                              </button>
-                         </div>
-                    </div>
-                ))}
+                        </div>
+                    );
+                })}
             </div>
          ) : (
-             <p className="text-center text-gray-500 text-sm italic">{t.noUserReports}</p>
+             <div className="text-center py-8 bg-gray-900/50 rounded-lg border border-dashed border-gray-700">
+                 <p className="text-gray-500 text-sm italic">{t.noUserReports}</p>
+             </div>
          )}
       </div>
 
-      <hr className="border-gray-700" />
+      <hr className="border-gray-800" />
 
-      {/* Global Updates Section */}
+      {/* Global AI Updates Section */}
       <div>
-        <h2 className="text-2xl font-bold mb-4 text-center flex items-center justify-center gap-3">
+        <h2 className="text-2xl font-bold mb-4 text-center flex items-center justify-center gap-3 text-gray-200">
             <UpdatesIcon /> {t.updatesHeader}
         </h2>
-        <p className="text-center text-gray-400 mb-6">{t.updatesSub}</p>
+        <p className="text-center text-gray-500 text-sm mb-6">{t.updatesSub}</p>
 
         {loading ? (
             <div className="flex justify-center items-center h-40">
             <div className="text-center">
                 <LoadingSpinner />
-                <p className="mt-2 text-gray-400">{t.fetchingUpdates}</p>
+                <p className="mt-2 text-gray-400 animate-pulse">{t.fetchingUpdates}</p>
             </div>
             </div>
         ) : updates ? (
-            <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg">
-            <div className="prose prose-invert prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: updates.text.replace(/\n/g, '<br />') }} />
-            <GroundingSources chunks={updates.groundingChunks} />
+            <div className="p-5 bg-gray-800 border border-gray-700 rounded-lg shadow-inner">
+                <div className="prose prose-invert prose-sm max-w-none leading-relaxed text-gray-300" dangerouslySetInnerHTML={{ __html: updates.text.replace(/\n/g, '<br />') }} />
+                <GroundingSources chunks={updates.groundingChunks} />
             </div>
         ) : (
-            <p className="text-center text-red-400">{t.noUpdates}</p>
+            <p className="text-center text-gray-500 bg-gray-800 p-4 rounded">{t.noUpdates}</p>
         )}
       </div>
     </div>
