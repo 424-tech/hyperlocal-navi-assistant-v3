@@ -1,8 +1,9 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { RoutePlannerIcon, UpdatesIcon, ChatIcon, ReportIcon, HelpIcon, ManualLocationIcon } from './Icons';
 import { translations } from '../translations';
 import { Language } from '../types';
+import TrafficReportModal from './TrafficReportModal';
 
 type View = 'home' | 'planner' | 'chat' | 'updates';
 
@@ -32,9 +33,16 @@ const ActionButton = ({ icon, title, description, onClick, disabled = false }: {
 
 const Home: React.FC<HomeProps> = ({ setView, geoStatus, onShowInstructions, manualLocation, onEnterLocationManually, isScbContext, language }) => {
   const t = translations[language];
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
 
   return (
     <div className="animate-fadeIn space-y-6">
+      <TrafficReportModal 
+        isOpen={isReportModalOpen} 
+        onClose={() => setIsReportModalOpen(false)} 
+        language={language} 
+      />
+      
       <div className="text-center p-4 bg-gray-800/50 rounded-lg relative">
         <button 
           onClick={onShowInstructions} 
@@ -80,7 +88,7 @@ const Home: React.FC<HomeProps> = ({ setView, geoStatus, onShowInstructions, man
           icon={<ReportIcon />}
           title={t.reportTitle}
           description={t.reportDesc}
-          onClick={() => alert('Traffic reporting feature coming soon!')}
+          onClick={() => setIsReportModalOpen(true)}
         />
       </div>
     </div>
