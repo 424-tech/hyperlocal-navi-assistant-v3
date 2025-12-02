@@ -394,3 +394,29 @@ export const sendMessageToChat = async (chat: Chat, message: string) => {
         throw new Error("Failed to get a response from the assistant. Check API Key.");
     }
 };
+
+export const enhanceTrafficReport = async (text: string, language: Language): Promise<string> => {
+    try {
+        const client = getAI();
+        const langInstruction = language === 'or' 
+            ? "The output MUST be in Odia (Oriya) language." 
+            : "The output MUST be in English.";
+        
+        const prompt = `
+            A user has submitted a traffic report: "${text}".
+            Please rewrite this report to be clear, professional, and concise, suitable for a public traffic update feed. 
+            Do not add new facts, just format the existing information nicely. 
+            ${langInstruction}
+        `;
+        
+        const response = await client.models.generateContent({
+            model: 'gemini-2.5-flash',
+            contents: prompt,
+        });
+        
+        return extractTextSafe(response).trim();
+    } catch (error) {
+        console.error("Error enhancing report:", error);
+        return text; // Fallback to original text
+    }
+};
