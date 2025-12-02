@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Home from './components/Home';
 import RoutePlanner from './components/RoutePlanner';
@@ -73,7 +72,8 @@ const App: React.FC = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-900 text-gray-100 font-sans flex flex-col">
+    /* Changed h-screen to h-full to fit perfectly inside iframes or mobile viewports */
+    <div className="h-full w-full bg-gray-900 text-gray-100 font-sans flex flex-col overflow-hidden relative">
       {showInstructions && <Instructions onClose={() => setShowInstructions(false)} />}
       <ManualLocationModal 
         isOpen={isManualLocationModalOpen}
@@ -81,7 +81,9 @@ const App: React.FC = () => {
         onSave={handleSaveManualLocation}
         currentLocation={manualLocation}
       />
-      <header className="bg-gray-800/50 backdrop-blur-sm shadow-lg p-4 text-center sticky top-0 z-10 flex justify-between items-center">
+      
+      {/* Header is static (flex item), never scrolls out of view */}
+      <header className="bg-gray-800/50 backdrop-blur-sm shadow-lg p-4 text-center z-10 flex justify-between items-center flex-shrink-0">
         <h1 className="text-xl font-bold tracking-wider text-cyan-400 flex-grow text-center">{t.appName}</h1>
         <button 
           onClick={() => setLanguage(prev => prev === 'en' ? 'or' : 'en')}
@@ -91,11 +93,13 @@ const App: React.FC = () => {
         </button>
       </header>
       
-      <main className="flex-grow p-4 md:p-6 overflow-auto">
+      {/* Main content takes remaining space and handles its own scrolling */}
+      <main className="flex-grow p-4 md:p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-transparent">
         {renderView()}
       </main>
 
-      <nav className="sticky bottom-0 left-0 right-0 bg-gray-800/80 backdrop-blur-md border-t border-gray-700 shadow-lg flex justify-around z-10">
+      {/* Footer is static (flex item), always visible at bottom */}
+      <nav className="bg-gray-800/80 backdrop-blur-md border-t border-gray-700 shadow-lg flex justify-around z-10 flex-shrink-0 pb-safe">
         <NavItem activeView={view} targetView="home" icon={<NavHomeIcon />} label={t.navHome} />
         <NavItem activeView={view} targetView="planner" icon={<NavRouteIcon />} label={t.navPlanner} />
         <NavItem activeView={view} targetView="updates" icon={<NavUpdatesIcon />} label={t.navUpdates} />
