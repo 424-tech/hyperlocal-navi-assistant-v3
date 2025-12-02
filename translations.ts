@@ -55,9 +55,27 @@ export const translations = {
     updatesSub: "Real-time information about traffic and events in your area.",
     fetchingUpdates: "Fetching latest news...",
     noUpdates: "Could not load updates.",
+    yourReports: "Your Community Reports",
+    noUserReports: "No reports submitted yet.",
     // Chat
     chatInput: "Type your message...",
     chatWelcome: "Hi! I'm your navigation assistant. Ask me anything!",
+    // Report Traffic
+    reportHeader: "Report Traffic Issue",
+    reportLocation: "Location",
+    reportLocationPlace: "e.g., Near Main Gate",
+    reportDescLabel: "Description",
+    reportDescPlace: "e.g., Heavy congestion due to construction...",
+    reportSeverity: "Severity",
+    submitReport: "Submit Report",
+    processingReport: "Processing...",
+    reportSuccess: "Report Submitted!",
+    sevLight: "Light Traffic",
+    sevModerate: "Moderate Traffic",
+    sevHeavy: "Heavy Traffic",
+    sevAccident: "Accident",
+    sevClosure: "Road Closure",
+    cancel: "Cancel"
   },
   or: {
     appName: "ହାଇପରଲୋକାଲ ନାଭି-ସହାୟକ",
@@ -112,8 +130,26 @@ export const translations = {
     updatesSub: "ଆପଣଙ୍କ ଅଞ୍ଚଳରେ ଟ୍ରାଫିକ୍ ଏବଂ ଘଟଣା ବିଷୟରେ ତଥ୍ୟ।",
     fetchingUpdates: "ସର୍ବଶେଷ ଖବର ଅଣାଯାଉଛି...",
     noUpdates: "ଅପଡେଟ୍ ମିଳିଲା ନାହିଁ।",
+    yourReports: "ଆପଣଙ୍କ ରିପୋର୍ଟ",
+    noUserReports: "ବର୍ତ୍ତମାନ ସୁଦ୍ଧା କୌଣସି ରିପୋର୍ଟ ନାହିଁ।",
     // Chat
     chatInput: "ଆପଣଙ୍କ ବାର୍ତ୍ତା ଲେଖନ୍ତୁ...",
     chatWelcome: "ନମସ୍କାର! ମୁଁ ଆପଣଙ୍କର ନାଭିଗେସନ୍ ସହାୟକ। ମୋତେ କିଛି ବି ପଚାରନ୍ତୁ!",
+    // Report Traffic
+    reportHeader: "ଟ୍ରାଫିକ୍ ସମସ୍ୟା ଜଣାନ୍ତୁ",
+    reportLocation: "ସ୍ଥାନ",
+    reportLocationPlace: "ଉଦାହରଣ: ମୁଖ୍ୟ ଫାଟକ ନିକଟରେ",
+    reportDescLabel: "ବିବରଣୀ",
+    reportDescPlace: "ଉଦାହରଣ: ରାସ୍ତା କାମ ଯୋଗୁଁ ପ୍ରବଳ ଭିଡ଼...",
+    reportSeverity: "ତୀବ୍ରତା",
+    submitReport: "ରିପୋର୍ଟ ଦାଖଲ କରନ୍ତୁ",
+    processingReport: "ପ୍ରକ୍ରିୟାକରଣ ଚାଲିଛି...",
+    reportSuccess: "ରିପୋର୍ଟ ଗ୍ରହଣ କରାଗଲା!",
+    sevLight: "ସାମାନ୍ୟ ଟ୍ରାଫିକ୍",
+    sevModerate: "ମଧ୍ୟମ ଟ୍ରାଫିକ୍",
+    sevHeavy: "ପ୍ରବଳ ଟ୍ରାଫିକ୍",
+    sevAccident: "ଦୁର୍ଘଟଣା",
+    sevClosure: "ରାସ୍ତା ବନ୍ଦ",
+    cancel: "ବାତିଲ୍"
   }
 };
