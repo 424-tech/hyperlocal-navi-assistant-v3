@@ -69,6 +69,8 @@ export interface UserTrafficReport {
   location: string;
   description: string;
   originalText?: string;
+  reporterName?: string; // New: User Alias (e.g., "Neon Scout")
+  verificationCount?: number; // New: Social proof counter
 }
 
 export type Language = 'en' | 'or';
