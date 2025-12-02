@@ -21,6 +21,16 @@ const TrafficReportModal: React.FC<TrafficReportModalProps> = ({ isOpen, onClose
 
   if (!isOpen) return null;
 
+  // Simple random alias generator for privacy
+  const generateAlias = () => {
+    const adjectives = ['Neon', 'Cyber', 'Solar', 'Rapid', 'Urban', 'Night', 'Swift', 'Metro', 'Campus'];
+    const nouns = ['Scout', 'Rider', 'Guide', 'Pilot', 'Walker', 'Ranger', 'Drifter', 'Surfer', 'Navigator'];
+    const randomAdj = adjectives[Math.floor(Math.random() * adjectives.length)];
+    const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
+    const randomNum = Math.floor(Math.random() * 99) + 1;
+    return `${randomAdj} ${randomNoun} ${randomNum}`;
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -29,6 +39,13 @@ const TrafficReportModal: React.FC<TrafficReportModalProps> = ({ isOpen, onClose
         // Use Gemini to format the description nicely
         const rawText = `${description} at ${location}`;
         const enhancedDescription = await enhanceTrafficReport(rawText, language);
+        
+        // Ensure a reporter name exists in session, or create one
+        let myAlias = sessionStorage.getItem('scb_user_alias');
+        if (!myAlias) {
+            myAlias = generateAlias();
+            sessionStorage.setItem('scb_user_alias', myAlias);
+        }
 
         const newReport: UserTrafficReport = {
             id: Date.now().toString(),
@@ -36,7 +53,9 @@ const TrafficReportModal: React.FC<TrafficReportModalProps> = ({ isOpen, onClose
             severity,
             location,
             description: enhancedDescription,
-            originalText: description
+            originalText: description,
+            reporterName: myAlias,
+            verificationCount: 1 // Starts with 1 verification (the reporter)
         };
 
         // Save to local storage
