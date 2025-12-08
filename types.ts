@@ -1,7 +1,9 @@
 
+
 export interface GeolocationState {
   latitude: number | null;
   longitude: number | null;
+  accuracy: number | null;
 }
 
 export interface GroundingChunk {
@@ -72,5 +74,8 @@ export interface UserTrafficReport {
   reporterName?: string; // New: User Alias (e.g., "Neon Scout")
   verificationCount?: number; // New: Social proof counter
 }
+
+
+
 
 export type Language = 'en' | 'or';

@@ -9,11 +9,16 @@ let ai: GoogleGenAI | null = null;
 const getAI = () => {
   if (ai) return ai;
 
-  if (!process.env.API_KEY) {
-    throw new Error("API Key is missing. Please set API_KEY in your .env file or deployment settings.");
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY || import.meta.env.VITE_API_KEY;
+
+  if (!apiKey) {
+    console.error("Gemini API Key is missing. Please set VITE_GEMINI_API_KEY in your .env file.");
+    // Return null instead of throwing to prevent app crash on load, 
+    // components should handle null client gracefully.
+    throw new Error("API Key is missing. Please set VITE_GEMINI_API_KEY.");
   }
 
-  ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  ai = new GoogleGenAI({ apiKey });
   return ai;
 };
 

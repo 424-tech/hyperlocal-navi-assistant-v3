@@ -4,7 +4,7 @@ import { Language } from './types';
 export const translations = {
   en: {
     appName: "Hyperlocal Navi-Assistant",
-    welcome: "Welcome!",
+    welcome: "Welcome to My Amazing App",
     welcomeSub: "Your AI companion for navigating tricky local roads. What would you like to do?",
     gettingLocation: "Getting your location...",
     manualLocationSet: "Location manually set to:",
@@ -91,7 +91,7 @@ export const translations = {
     submitReport: "Submit Report",
     processingReport: "AI is processing...",
     reportSuccess: "Report Live!",
-     // Dashboard Stats
+    // Dashboard Stats
     verifiedBy: "Verified by",
     users: "users",
     justNow: "Just now",
@@ -187,7 +187,7 @@ export const translations = {
     submitReport: "ରିପୋର୍ଟ କରନ୍ତୁ",
     processingReport: "AI ଯାଞ୍ଚ କରୁଛି...",
     reportSuccess: "ରିପୋର୍ଟ ସଫଳ ହେଲା!",
-     // Dashboard Stats
+    // Dashboard Stats
     verifiedBy: "ସତ୍ୟାପିତ କରିଛନ୍ତି",
     users: "ଜଣ",
     justNow: "ବର୍ତ୍ତମାନ",

@@ -43,14 +43,14 @@ const App: React.FC = () => {
       case 'planner':
         return <RoutePlanner location={location} manualLocation={manualLocation} language={language} />;
       case 'chat':
-        return <ChatBot language={language} />;
+        return <ChatBot language={language} location={location} />;
       case 'updates':
         return <LocalUpdates location={location} manualLocation={manualLocation} language={language} />;
       case 'home':
       default:
-        return <Home 
-          setView={setView} 
-          geoStatus={{error: geoError, loading: geoLoading}} 
+        return <Home
+          setView={setView}
+          geoStatus={{ error: geoError, loading: geoLoading }}
           onShowInstructions={() => setShowInstructions(true)}
           manualLocation={manualLocation}
           onEnterLocationManually={() => setIsManualLocationModalOpen(true)}
@@ -63,11 +63,10 @@ const App: React.FC = () => {
   const NavItem = ({ activeView, targetView, icon, label }: { activeView: View, targetView: View, icon: React.ReactNode, label: string }) => (
     <button
       onClick={() => setView(targetView)}
-      className={`flex flex-col items-center justify-center w-full pt-3 pb-2 transition-all duration-200 ${
-        activeView === targetView 
-          ? 'text-blue-700 transform scale-105 font-semibold' 
-          : 'text-slate-400 hover:text-slate-600'
-      }`}
+      className={`flex flex-col items-center justify-center w-full pt-3 pb-2 transition-all duration-200 ${activeView === targetView
+        ? 'text-blue-700 transform scale-105 font-semibold'
+        : 'text-slate-400 hover:text-slate-600'
+        }`}
     >
       {icon}
       <span className="text-[10px] uppercase tracking-wide mt-1">{label}</span>
@@ -77,26 +76,26 @@ const App: React.FC = () => {
   return (
     <div className="h-full w-full bg-slate-50 text-slate-900 font-sans flex flex-col overflow-hidden relative">
       {showInstructions && <Instructions onClose={() => setShowInstructions(false)} />}
-      <ManualLocationModal 
+      <ManualLocationModal
         isOpen={isManualLocationModalOpen}
         onClose={() => setIsManualLocationModalOpen(false)}
         onSave={handleSaveManualLocation}
         currentLocation={manualLocation}
       />
-      
+
       {/* Header: White background, clean shadow */}
       <header className="bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm p-4 text-center z-10 flex justify-between items-center flex-shrink-0">
         <h1 className="text-xl font-bold tracking-tight text-blue-800 flex-grow text-center">
           {t.appName}
         </h1>
-        <button 
+        <button
           onClick={() => setLanguage(prev => prev === 'en' ? 'or' : 'en')}
           className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-md text-xs font-bold border border-slate-300 text-slate-700 transition-colors shadow-sm"
         >
           {language === 'en' ? 'ଓଡ଼ିଆ' : 'English'}
         </button>
       </header>
-      
+
       {/* Main content */}
       <main className="flex-grow p-4 md:p-6 overflow-y-auto scrollbar-thin scrollbar-thumb-slate-300 scrollbar-track-transparent">
         {renderView()}
