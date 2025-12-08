@@ -70,31 +70,49 @@ const ChatBot: React.FC<ChatBotProps> = ({ language }) => {
   };
 
   return (
-    <div className="flex flex-col h-[calc(100vh-150px)] max-h-[70vh] bg-gray-800/50 rounded-lg shadow-xl animate-fadeIn">
-      <div className="flex-grow p-4 overflow-y-auto space-y-4">
+    <div className="flex flex-col h-[calc(100vh-150px)] max-h-[70vh] bg-white rounded-2xl shadow-lg border border-slate-200 animate-fadeIn overflow-hidden">
+      <div className="flex-grow p-4 overflow-y-auto space-y-4 bg-slate-50">
         {messages.map((msg, index) => (
-          <div key={index} className={`flex items-start gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-            {msg.sender === 'bot' && <div className="flex-shrink-0 w-8 h-8 rounded-full bg-cyan-500 flex items-center justify-center"><BotIcon /></div>}
-            <div className={`max-w-xs md:max-w-md lg:max-w-lg px-4 py-2 rounded-xl ${msg.sender === 'user' ? 'bg-cyan-600 text-white rounded-br-none' : 'bg-gray-700 text-gray-200 rounded-bl-none'}`}>
-              <p className="text-sm break-words">{msg.text}</p>
-              {loading && msg.sender === 'bot' && index === messages.length - 1 && <div className="typing-indicator"><span>.</span><span>.</span><span>.</span></div>}
+          <div key={index} className={`flex items-end gap-2 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+            {msg.sender === 'bot' && (
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center mb-1 shadow-sm">
+                <BotIcon />
+              </div>
+            )}
+            <div className={`max-w-[80%] md:max-w-md px-5 py-3 rounded-2xl shadow-sm text-sm leading-relaxed ${
+              msg.sender === 'user' 
+                ? 'bg-blue-600 text-white rounded-br-none' 
+                : 'bg-white text-slate-800 border border-slate-200 rounded-bl-none'
+            }`}>
+              <p className="break-words">{msg.text}</p>
+              {loading && msg.sender === 'bot' && index === messages.length - 1 && (
+                <div className="typing-indicator mt-1 opacity-70"><span>.</span><span>.</span><span>.</span></div>
+              )}
             </div>
-            {msg.sender === 'user' && <div className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center"><UserIcon /></div>}
+            {msg.sender === 'user' && (
+              <div className="flex-shrink-0 w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mb-1 shadow-sm">
+                <UserIcon />
+              </div>
+            )}
           </div>
         ))}
         <div ref={messagesEndRef} />
       </div>
-      <div className="p-4 border-t border-gray-700 flex items-center">
+      <div className="p-4 bg-white border-t border-slate-200 flex items-center gap-3">
         <input
           type="text"
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder={t.chatInput}
-          className="flex-grow bg-gray-700 border border-gray-600 rounded-full py-2 px-4 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm"
+          className="flex-grow bg-slate-100 border border-slate-200 text-slate-900 rounded-full py-3 px-5 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all text-sm shadow-inner"
           disabled={loading}
         />
-        <button onClick={handleSend} disabled={loading || !input.trim()} className="ml-3 bg-cyan-600 hover:bg-cyan-700 text-white p-2 rounded-full disabled:opacity-50 transition-colors">
+        <button 
+          onClick={handleSend} 
+          disabled={loading || !input.trim()} 
+          className="bg-blue-600 hover:bg-blue-700 disabled:bg-slate-300 text-white p-3 rounded-full shadow-md transition-all transform hover:scale-105"
+        >
           <SendIcon />
         </button>
       </div>
@@ -102,6 +120,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ language }) => {
         .typing-indicator span {
           display: inline-block;
           animation: bounce 1.2s infinite;
+          margin: 0 1px;
         }
         .typing-indicator span:nth-child(2) {
           animation-delay: 0.2s;

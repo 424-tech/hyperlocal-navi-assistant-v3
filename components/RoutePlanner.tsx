@@ -18,15 +18,15 @@ const GroundingSources: React.FC<{ chunks: GroundingChunk[] }> = ({ chunks }) =>
   const validChunks = chunks.filter(chunk => chunk.web?.uri || chunk.maps?.uri);
 
   return (
-    <div className="mt-4 pt-4 border-t border-gray-700">
-      <h4 className="font-semibold text-gray-300 flex items-center gap-2"><SourceIcon /> Sources:</h4>
-      <ul className="list-disc list-inside mt-2 space-y-1 text-sm">
+    <div className="mt-4 pt-4 border-t border-slate-200">
+      <h4 className="font-semibold text-slate-700 flex items-center gap-2 text-sm uppercase tracking-wide"><SourceIcon /> Sources:</h4>
+      <ul className="list-disc list-inside mt-2 space-y-1 text-sm text-slate-600">
         {validChunks.map((chunk, index) => {
           const source = chunk.web || chunk.maps;
           if (!source) return null;
           return (
             <li key={index}>
-              <a href={source.uri} target="_blank" rel="noopener noreferrer" className="text-cyan-400 hover:underline">
+              <a href={source.uri} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline hover:text-blue-800">
                 {source.title || 'Source link'}
               </a>
             </li>
@@ -75,7 +75,7 @@ const NavButton: React.FC<NavButtonProps> = ({ onClick, disabled, children }) =>
   <button
     onClick={onClick}
     disabled={disabled}
-    className="bg-gray-700 hover:bg-gray-600 disabled:bg-gray-800 disabled:text-gray-500 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded-md flex items-center justify-center transition-colors"
+    className="bg-white border border-slate-300 hover:bg-slate-50 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed text-slate-700 font-bold py-2 px-4 rounded-lg flex items-center justify-center transition-colors shadow-sm"
   >
     {children}
   </button>
@@ -213,76 +213,79 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ location, manualLocation, l
     : [20.4795, 85.8778]; // Fallback to Cuttack
 
   return (
-    <div className="animate-fadeIn">
-      <div className="flex justify-center mb-6 space-x-4">
+    <div className="animate-fadeIn max-w-2xl mx-auto">
+      <div className="flex justify-center mb-6 space-x-2 bg-slate-200 p-1 rounded-full w-fit mx-auto">
         <button
             onClick={() => { setMode('route'); setResult(null); }}
-            className={`px-4 py-2 rounded-full font-bold transition-all ${mode === 'route' ? 'bg-cyan-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
+            className={`px-5 py-2 rounded-full font-bold text-sm transition-all ${mode === 'route' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
         >
             {t.navMode}
         </button>
         <button
             onClick={() => { setMode('dayPlan'); setResult(null); }}
-            className={`px-4 py-2 rounded-full font-bold transition-all ${mode === 'dayPlan' ? 'bg-cyan-600 text-white' : 'bg-gray-700 text-gray-300 hover:bg-gray-600'}`}
+            className={`px-5 py-2 rounded-full font-bold text-sm transition-all ${mode === 'dayPlan' ? 'bg-white text-blue-700 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
         >
             {t.dayMode}
         </button>
       </div>
 
-      <h2 className="text-2xl font-bold mb-4 text-center">
-          {mode === 'route' ? t.campusNavTitle : t.itineraryTitle}
-      </h2>
-      <p className="text-center text-gray-400 mb-6">
-          {mode === 'route' ? t.navSub : t.daySub}
-      </p>
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-slate-800">
+            {mode === 'route' ? t.campusNavTitle : t.itineraryTitle}
+        </h2>
+        <p className="text-slate-500 mt-1">
+            {mode === 'route' ? t.navSub : t.daySub}
+        </p>
+      </div>
       
       {!result && (
         <>
-          <form onSubmit={handleSubmit} className="space-y-4 transition-all duration-500">
+          <form onSubmit={handleSubmit} className="space-y-4 transition-all duration-500 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
             {mode === 'route' ? (
                 <>
                   <div>
-                      <label htmlFor="destination" className="block text-sm font-medium text-gray-300 mb-1">{t.destLabel}</label>
+                      <label htmlFor="destination" className="block text-sm font-semibold text-slate-700 mb-1">{t.destLabel}</label>
                       <input
                       type="text"
                       id="destination"
                       value={destination}
                       onChange={(e) => setDestination(e.target.value)}
                       placeholder={t.destPlace}
-                      className="w-full bg-gray-800 border border-gray-600 rounded-md px-3 py-2 focus:ring-cyan-500 focus:border-cyan-500"
+                      className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder-slate-400"
                       />
                   </div>
                   <div>
-                      <label htmlFor="notes" className="block text-sm font-medium text-gray-300 mb-1">{t.notesLabel}</label>
+                      <label htmlFor="notes" className="block text-sm font-semibold text-slate-700 mb-1">{t.notesLabel}</label>
                       <textarea
                       id="notes"
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
                       placeholder={t.notesPlace}
                       rows={3}
-                      className="w-full bg-gray-800 border border-gray-600 rounded-md px-3 py-2 focus:ring-cyan-500 focus:border-cyan-500"
+                      className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder-slate-400"
                       />
                   </div>
                 </>
             ) : (
                 <div>
-                  <label htmlFor="dayPlan" className="block text-sm font-medium text-gray-300 mb-1">{t.dayPromptLabel}</label>
+                  <label htmlFor="dayPlan" className="block text-sm font-semibold text-slate-700 mb-1">{t.dayPromptLabel}</label>
                   <textarea
                   id="dayPlan"
                   value={dayPlanPrompt}
                   onChange={(e) => setDayPlanPrompt(e.target.value)}
                   placeholder={t.dayPromptPlace}
                   rows={5}
-                  className="w-full bg-gray-800 border border-gray-600 rounded-md px-3 py-2 focus:ring-cyan-500 focus:border-cyan-500"
+                  className="w-full bg-slate-50 border border-slate-300 text-slate-900 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all placeholder-slate-400"
                   />
               </div>
             )}
             
-            {error && <p className="text-red-400 text-sm">{error}</p>}
+            {error && <p className="text-red-600 bg-red-50 p-3 rounded-lg text-sm border border-red-100">{error}</p>}
+            
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-md flex items-center justify-center transition-colors disabled:bg-gray-500"
+              className="w-full bg-blue-700 hover:bg-blue-800 text-white font-bold py-3.5 px-4 rounded-xl flex items-center justify-center transition-all shadow-md hover:shadow-lg disabled:bg-slate-300 disabled:shadow-none"
             >
               {loading ? <LoadingSpinner /> : <><SearchIcon /> <span className="ml-2">{mode === 'route' ? t.findPath : t.genPlan}</span></>}
             </button>
@@ -290,23 +293,23 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ location, manualLocation, l
 
           {/* Saved Plans List */}
           {savedItems.length > 0 && !loading && (
-            <div className="mt-8 pt-6 border-t border-gray-700">
-               <h3 className="text-lg font-bold text-gray-300 mb-3 flex items-center gap-2">
+            <div className="mt-8 pt-6 border-t border-slate-200">
+               <h3 className="text-lg font-bold text-slate-700 mb-4 flex items-center gap-2">
                  <FolderIcon /> {t.savedPlans}
                </h3>
                <div className="space-y-3">
                  {savedItems.map(item => (
-                   <div key={item.id} onClick={() => handleLoad(item)} className="bg-gray-800 hover:bg-gray-700 border border-gray-700 rounded-lg p-3 flex justify-between items-center cursor-pointer transition-colors group">
+                   <div key={item.id} onClick={() => handleLoad(item)} className="bg-white border border-slate-200 rounded-xl p-4 flex justify-between items-center cursor-pointer transition-all hover:shadow-md hover:border-blue-300 group">
                       <div>
-                        <div className="font-semibold text-cyan-400">{item.name}</div>
-                        <div className="text-xs text-gray-500 flex gap-2">
-                           <span className="capitalize">{item.mode === 'route' ? 'Navigation' : 'Itinerary'}</span> • 
+                        <div className="font-bold text-slate-800">{item.name}</div>
+                        <div className="text-xs text-slate-500 flex gap-2 mt-1">
+                           <span className="bg-slate-100 px-2 py-0.5 rounded text-slate-600 font-medium capitalize">{item.mode === 'route' ? 'Navigation' : 'Itinerary'}</span>
                            <span>{new Date(item.timestamp).toLocaleDateString()}</span>
                         </div>
                       </div>
                       <button 
                         onClick={(e) => handleDelete(item.id, e)}
-                        className="p-2 text-gray-500 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
+                        className="p-2 text-slate-400 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 focus:opacity-100"
                         title="Delete"
                       >
                         <TrashIcon />
@@ -320,9 +323,9 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ location, manualLocation, l
       )}
 
       {loading && (
-        <div className="text-center mt-8 p-4 bg-gray-800/50 rounded-lg">
-          <p className="font-semibold">{t.analyzing}</p>
-          <p className="text-sm text-gray-400 mt-2">{t.connecting}</p>
+        <div className="text-center mt-8 p-6 bg-white border border-slate-200 rounded-xl shadow-sm">
+          <p className="font-bold text-slate-800">{t.analyzing}</p>
+          <p className="text-sm text-slate-500 mt-2">{t.connecting}</p>
         </div>
       )}
 
@@ -330,22 +333,20 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ location, manualLocation, l
         <div className="mt-6 animate-fadeIn space-y-4">
           <Map 
             userLocation={userLocation} 
-            // Route props
             steps={result.steps} 
             landmarks={result.landmarks}
             traffic={result.trafficSegments}
             currentStepIndex={currentStepIndex}
-            // Planner props
             itineraryLocations={result.locations}
             itineraryLines={result.lines}
             highlightedItineraryIndex={activeItineraryIndex}
           />
           
           {mode === 'route' && result.steps.length > 0 && (
-            <div className="p-4 bg-gray-800 border border-gray-700 rounded-lg text-center">
-                <p className="font-bold text-lg text-cyan-400">{t.step} {currentStepIndex + 1} / {result.steps.length}</p>
-                <p className="mt-2 text-gray-200 text-lg">{result.steps[currentStepIndex].description}</p>
-                <div className="flex justify-between mt-4">
+            <div className="p-5 bg-white border border-slate-200 shadow-md rounded-xl text-center relative z-10">
+                <p className="font-bold text-sm uppercase tracking-wide text-blue-600 mb-1">{t.step} {currentStepIndex + 1} / {result.steps.length}</p>
+                <p className="text-slate-800 text-xl font-medium leading-relaxed">{result.steps[currentStepIndex].description}</p>
+                <div className="flex justify-between mt-6">
                 <NavButton onClick={() => setCurrentStepIndex(i => Math.max(0, i - 1))} disabled={currentStepIndex === 0}>
                     <ArrowLeftIcon /><span className="ml-2">{t.prev}</span>
                 </NavButton>
@@ -357,62 +358,63 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ location, manualLocation, l
           )}
 
           {mode === 'dayPlan' && result.locations.length > 0 && (
-              <div className="space-y-4">
-                  <h3 className="text-xl font-bold text-cyan-400 border-b border-gray-700 pb-2">{t.yourItinerary}</h3>
+              <div className="bg-white border border-slate-200 rounded-xl shadow-sm p-6">
+                  <h3 className="text-xl font-bold text-blue-800 border-b border-slate-100 pb-3 mb-4">{t.yourItinerary}</h3>
                   <div className="space-y-0 relative">
                       {/* Vertical line connector */}
-                      <div className="absolute left-4 top-4 bottom-4 w-0.5 bg-gray-700"></div>
+                      <div className="absolute left-4 top-4 bottom-4 w-0.5 bg-slate-200"></div>
                       
                       {result.locations.map((loc, idx) => (
                           <div 
                             key={idx} 
                             onClick={() => setActiveItineraryIndex(idx)}
-                            className={`relative pl-10 py-3 cursor-pointer transition-colors rounded-r-lg ${activeItineraryIndex === idx ? 'bg-gray-800/80 border-l-4 border-cyan-500' : 'hover:bg-gray-800/30'}`}
+                            className={`relative pl-10 py-3 cursor-pointer transition-all rounded-r-lg ${activeItineraryIndex === idx ? 'bg-blue-50 border-l-4 border-blue-500 -ml-[2px]' : 'hover:bg-slate-50'}`}
                           >
                                 {/* Dot */}
-                              <div className={`absolute left-2.5 top-5 w-3 h-3 rounded-full border-2 border-gray-900 ${activeItineraryIndex === idx ? 'bg-cyan-400 scale-125' : 'bg-gray-500'}`}></div>
+                              <div className={`absolute left-2.5 top-5 w-3 h-3 rounded-full border-2 border-white shadow-sm z-10 ${activeItineraryIndex === idx ? 'bg-blue-600 scale-125' : 'bg-slate-400'}`}></div>
                               
                               <div className="flex justify-between items-start">
                                   <div>
-                                    <h4 className="font-bold text-white text-lg">{loc.name}</h4>
-                                    <p className="text-sm text-gray-400">{loc.description}</p>
+                                    <h4 className="font-bold text-slate-800 text-lg">{loc.name}</h4>
+                                    <p className="text-sm text-slate-500">{loc.description}</p>
                                   </div>
                                   <div className="text-right flex-shrink-0 ml-2">
-                                      <span className="block text-cyan-400 font-mono font-bold">{loc.time}</span>
-                                      <span className="block text-xs text-gray-500">{loc.duration}</span>
+                                      <span className="block text-blue-600 font-mono font-bold bg-blue-50 px-2 py-0.5 rounded text-sm">{loc.time}</span>
+                                      <span className="block text-xs text-slate-400 mt-1">{loc.duration}</span>
                                   </div>
                               </div>
                           </div>
                       ))}
                   </div>
                   {result.summaryText && (
-                      <div className="mt-4 p-4 bg-gray-800 rounded-lg text-sm text-gray-300 italic border-l-2 border-cyan-700">
+                      <div className="mt-6 p-4 bg-slate-50 rounded-lg text-sm text-slate-600 italic border-l-4 border-slate-300">
                           {result.summaryText}
                       </div>
                   )}
               </div>
           )}
           
-          <details className="bg-gray-800/50 rounded-lg p-1">
-            <summary className="cursor-pointer p-2 text-gray-300 font-semibold">
-                {mode === 'route' ? t.viewSummary : t.viewPlanText}
+          <details className="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+            <summary className="cursor-pointer p-4 text-slate-700 font-bold bg-slate-50 hover:bg-slate-100 transition-colors flex justify-between items-center">
+                <span>{mode === 'route' ? t.viewSummary : t.viewPlanText}</span>
+                <span className="text-slate-400 text-xs">▼</span>
             </summary>
-            <div className="p-4 border-t border-gray-700">
-              <div className="prose prose-invert prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: (result.text || result.summaryText).replace(/\n/g, '<br />') }} />
+            <div className="p-5 border-t border-slate-200">
+              <div className="prose prose-slate prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: (result.text || result.summaryText).replace(/\n/g, '<br />') }} />
               <GroundingSources chunks={result.groundingChunks} />
             </div>
           </details>
 
-          <div className="flex space-x-3">
+          <div className="flex space-x-3 pt-4">
              <button
               onClick={() => setResult(null)}
-              className="flex-1 bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md flex items-center justify-center transition-colors"
+              className="flex-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 font-bold py-3 px-4 rounded-xl flex items-center justify-center transition-colors shadow-sm"
             >
               {mode === 'route' ? t.planNew : t.createNew}
             </button>
              <button
               onClick={handleSave}
-              className="flex-1 bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-md flex items-center justify-center transition-colors"
+              className="flex-1 bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-xl flex items-center justify-center transition-colors shadow-md"
             >
               <SaveIcon /> <span className="ml-2">{t.savePlan}</span>
             </button>
@@ -422,14 +424,14 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ location, manualLocation, l
        
        {result && mode === 'route' && result.steps.length === 0 && !loading && (
         <div className="mt-8 text-center">
-           <p className="text-yellow-400">Could not generate an interactive route. Displaying summary instead.</p>
-           <div className="mt-4 p-4 bg-gray-800 border border-gray-700 rounded-lg">
-            <div className="prose prose-invert prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: (result.text || result.summaryText || '').replace(/\n/g, '<br />') }} />
+           <p className="text-orange-600 font-medium bg-orange-50 p-2 rounded-lg inline-block">Could not generate an interactive route. Displaying summary instead.</p>
+           <div className="mt-4 p-5 bg-white border border-slate-200 shadow-sm rounded-xl text-left">
+            <div className="prose prose-slate prose-sm max-w-none" dangerouslySetInnerHTML={{ __html: (result.text || result.summaryText || '').replace(/\n/g, '<br />') }} />
             <GroundingSources chunks={result.groundingChunks} />
           </div>
            <button
             onClick={() => setResult(null)}
-            className="mt-4 w-full bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded-md flex items-center justify-center transition-colors"
+            className="mt-6 w-full bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold py-3 px-4 rounded-xl transition-colors"
           >
             Start Over
           </button>

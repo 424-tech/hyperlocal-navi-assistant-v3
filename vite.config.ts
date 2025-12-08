@@ -4,15 +4,21 @@ import react from '@vitejs/plugin-react'
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   // Load env file based on `mode` in the current working directory.
-  // Set the third parameter to '' to load all env regardless of the `VITE_` prefix.
   const env = loadEnv(mode, (process as any).cwd(), '');
   
   return {
     plugins: [react()],
     define: {
-      // This is critical: It allows 'process.env.API_KEY' in your code to work
-      // by replacing it with the actual value during the build on Vercel/Netlify.
-      'process.env.API_KEY': JSON.stringify(env.API_KEY || env.GEMINI_API_KEY)
+      // API Key for Gemini
+      'process.env.API_KEY': JSON.stringify(env.API_KEY || env.GEMINI_API_KEY),
+      
+      // Firebase Configuration Keys
+      'process.env.FIREBASE_API_KEY': JSON.stringify(env.FIREBASE_API_KEY),
+      'process.env.FIREBASE_AUTH_DOMAIN': JSON.stringify(env.FIREBASE_AUTH_DOMAIN),
+      'process.env.FIREBASE_PROJECT_ID': JSON.stringify(env.FIREBASE_PROJECT_ID),
+      'process.env.FIREBASE_STORAGE_BUCKET': JSON.stringify(env.FIREBASE_STORAGE_BUCKET),
+      'process.env.FIREBASE_MESSAGING_SENDER_ID': JSON.stringify(env.FIREBASE_MESSAGING_SENDER_ID),
+      'process.env.FIREBASE_APP_ID': JSON.stringify(env.FIREBASE_APP_ID)
     },
     build: {
       outDir: 'dist',

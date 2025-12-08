@@ -1,38 +1,23 @@
 
 import { GoogleGenAI, Chat, FunctionDeclaration, Type } from "@google/genai";
 import { GroundingChunk, RouteCoordinate, TrafficSegment, RouteStep, Landmark, ItineraryLocation, ItineraryRoute, Language } from '../types';
+import { isRouteStep, isLandmark, isTrafficSegment, isItineraryLocation, isItineraryRoute, isRouteCoordinate } from '../utils/validation';
 
 // Lazy initialization to prevent crash on module load if key is missing
 let ai: GoogleGenAI | null = null;
 
 const getAI = () => {
   if (ai) return ai;
-  
+
   if (!process.env.API_KEY) {
     throw new Error("API Key is missing. Please set API_KEY in your .env file or deployment settings.");
   }
-  
+
   ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   return ai;
 };
 
-// --- STRICT SANITIZATION HELPERS ---
-const validateNumber = (val: any): number | null => {
-    const num = Number(val);
-    if (isNaN(num)) return null;
-    return num;
-};
 
-const validateCoord = (lat: any, lng: any): {lat: number, lng: number} | null => {
-    const vLat = validateNumber(lat);
-    const vLng = validateNumber(lng);
-    
-    if (vLat === null || vLng === null) return null;
-    // Basic strict bounds checking (Latitude -90 to 90, Longitude -180 to 180)
-    if (Math.abs(vLat) > 90 || Math.abs(vLng) > 180) return null;
-    
-    return { lat: vLat, lng: vLng };
-};
 
 // --- Function Declarations for Day Planner ---
 
@@ -84,15 +69,15 @@ const lineFunctionDeclaration: FunctionDeclaration = {
 
 // Helper to extract text from a response without triggering SDK warnings about function calls
 const extractTextSafe = (response: any): string => {
-    let text = "";
-    if (response.candidates && response.candidates.length > 0 && response.candidates[0].content && response.candidates[0].content.parts) {
-        for (const part of response.candidates[0].content.parts) {
-            if (part.text) {
-                text += part.text;
-            }
-        }
+  let text = "";
+  if (response.candidates && response.candidates.length > 0 && response.candidates[0].content && response.candidates[0].content.parts) {
+    for (const part of response.candidates[0].content.parts) {
+      if (part.text) {
+        text += part.text;
+      }
     }
-    return text;
+  }
+  return text;
 };
 
 export const isScbCampusLocation = async (location: string): Promise<boolean> => {
@@ -107,16 +92,16 @@ export const isScbCampusLocation = async (location: string): Promise<boolean> =>
     return text.includes("yes");
   } catch (error) {
     console.error("Error checking location context:", error);
-    return true; 
+    return true;
   }
 };
 
 export const planDayItinerary = async (promptText: string, language: Language = 'en') => {
   try {
     const client = getAI();
-    const langInstruction = language === 'or' 
-        ? "IMPORTANT: Provide all names, descriptions, and summaries in Odia (Oriya) language. The user speaks Odia." 
-        : "";
+    const langInstruction = language === 'or'
+      ? "IMPORTANT: Provide all names, descriptions, and summaries in Odia (Oriya) language. The user speaks Odia."
+      : "";
 
     const systemInstructions = `
       You are an expert Day Planner for the SCB Medical College & Hospital Campus in Cuttack.
@@ -151,43 +136,44 @@ export const planDayItinerary = async (promptText: string, language: Language = 
 
     const locations: ItineraryLocation[] = [];
     const lines: ItineraryRoute[] = [];
-    
+
     // Parse function calls from the response safely
     if (response.functionCalls) {
-        for (const fc of response.functionCalls) {
-            const args = fc.args as any;
-            if (!args) continue;
+      for (const fc of response.functionCalls) {
+        const args = fc.args as any;
+        if (!args) continue;
 
-            if (fc.name === 'location') {
-                const coord = validateCoord(args.lat, args.lng);
-                if (coord) {
-                    locations.push({
-                        name: args.name || "Location",
-                        description: args.description || "",
-                        lat: coord.lat,
-                        lng: coord.lng,
-                        time: args.time,
-                        duration: args.duration,
-                        sequence: validateNumber(args.sequence) || 0
-                    });
-                }
-            } else if (fc.name === 'line') {
-                const start = validateCoord(args.start?.lat, args.start?.lng);
-                const end = validateCoord(args.end?.lat, args.end?.lng);
-                
-                if (start && end) {
-                    lines.push({
-                        name: args.name || "Route",
-                        start: start,
-                        end: end,
-                        transport: args.transport,
-                        travelTime: args.travelTime
-                    });
-                }
-            }
+        if (fc.name === 'location') {
+          // Construct potential object and validate
+          const potentialLoc = {
+            name: args.name,
+            description: args.description,
+            lat: Number(args.lat),
+            lng: Number(args.lng),
+            time: args.time,
+            duration: args.duration,
+            sequence: Number(args.sequence)
+          };
+
+          if (isItineraryLocation(potentialLoc)) {
+            locations.push(potentialLoc);
+          }
+        } else if (fc.name === 'line') {
+          const potentialRoute = {
+            name: args.name,
+            start: { lat: Number(args.start?.lat), lng: Number(args.start?.lng) },
+            end: { lat: Number(args.end?.lat), lng: Number(args.end?.lng) },
+            transport: args.transport,
+            travelTime: args.travelTime
+          };
+
+          if (isItineraryRoute(potentialRoute)) {
+            lines.push(potentialRoute);
+          }
         }
+      }
     }
-    
+
     const summaryText = extractTextSafe(response);
 
     // Sort locations by sequence
@@ -204,9 +190,9 @@ export const planDayItinerary = async (promptText: string, language: Language = 
 export const planRoute = async (start: string, destination: string, notes: string, location: { latitude: number; longitude: number; } | null, language: Language = 'en') => {
   try {
     const client = getAI();
-    const langInstruction = language === 'or' 
-        ? "IMPORTANT: Provide all step descriptions, landmarks names, traffic descriptions, and the final summary in Odia (Oriya) language. The user speaks Odia." 
-        : "";
+    const langInstruction = language === 'or'
+      ? "IMPORTANT: Provide all step descriptions, landmarks names, traffic descriptions, and the final summary in Odia (Oriya) language. The user speaks Odia."
+      : "";
 
     const prompt = `
       You are a hyperlocal navigation expert for the SCB Medical College campus in Cuttack, India. Your primary function is to provide detailed, step-by-step navigation *within this campus*.
@@ -260,12 +246,12 @@ export const planRoute = async (start: string, destination: string, notes: strin
         thinkingConfig: { thinkingBudget: 16384 },
         tools: [{ googleSearch: {} }, { googleMaps: {} }],
         toolConfig: location ? {
-            retrievalConfig: {
-                latLng: {
-                    latitude: location.latitude,
-                    longitude: location.longitude
-                }
+          retrievalConfig: {
+            latLng: {
+              latitude: location.latitude,
+              longitude: location.longitude
             }
+          }
         } : undefined
       },
     });
@@ -282,37 +268,21 @@ export const planRoute = async (start: string, destination: string, notes: strin
     if (match && match[1]) {
       try {
         const parsedJson = JSON.parse(match[1]);
+
         if (parsedJson.steps && Array.isArray(parsedJson.steps)) {
-          // STRICT VALIDATION FOR STEPS with Optional Chaining
-          steps = parsedJson.steps.map((step: any) => ({
-              description: step.description || "Move to next point",
-              path: Array.isArray(step.path) 
-                ? step.path.map((p: any) => validateCoord(p?.lat, p?.lng)).filter((p: any) => p !== null) 
-                : []
-          })).filter((step: RouteStep) => step.path.length > 0);
+          steps = parsedJson.steps.filter(isRouteStep);
         }
-        
+
         if (parsedJson.landmarks && Array.isArray(parsedJson.landmarks)) {
-          // STRICT VALIDATION FOR LANDMARKS
-          landmarks = parsedJson.landmarks.map((lm: any) => ({
-              name: lm.name || "Landmark",
-              position: validateCoord(lm.position?.lat, lm.position?.lng)
-          })).filter((lm: any) => lm.position !== null);
+          landmarks = parsedJson.landmarks.filter(isLandmark);
         }
 
         if (parsedJson.traffic && Array.isArray(parsedJson.traffic)) {
-           // STRICT VALIDATION FOR TRAFFIC with Optional Chaining
-           trafficSegments = parsedJson.traffic.map((t: any) => ({
-               level: t.level || 'moderate',
-               description: t.description || 'Traffic info',
-               path: Array.isArray(t.path)
-                ? t.path.map((p: any) => validateCoord(p?.lat, p?.lng)).filter((p: any) => p !== null)
-                : []
-           })).filter((t: TrafficSegment) => t.path.length > 1);
+          trafficSegments = parsedJson.traffic.filter(isTrafficSegment);
         }
         text = rawText.replace(jsonBlockRegex, '').trim();
       } catch (e) {
-        console.error("Failed to parse route JSON from response:", e);
+        console.error("Failed to parse or validate route JSON:", e);
       }
     }
 
@@ -325,72 +295,120 @@ export const planRoute = async (start: string, destination: string, notes: strin
 };
 
 export const getLocalUpdates = async (location: { latitude: number; longitude: number; } | string | null, language: Language = 'en') => {
-    try {
-        const client = getAI();
-        let locationContext = '';
-        if (typeof location === 'string' && location.trim() !== '') {
-            locationContext = `in the area around "${location}"`;
-        } else if (typeof location === 'object' && location?.latitude && location.longitude) {
-            locationContext = `around latitude: ${location.latitude}, longitude: ${location.longitude}`;
-        } else {
-            locationContext = 'in the general Cuttack area';
-        }
-
-        const langInstruction = language === 'or' 
-            ? "Summarize the updates in Odia (Oriya) language." 
-            : "";
-
-        const prompt = `
-            Find the latest news about traffic, road closures, public events, or market days ${locationContext}. 
-            Provide a concise summary of the key updates that could affect local travel.
-            ${langInstruction}
-        `;
-        const response = await client.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: prompt,
-            config: {
-                tools: [{ googleSearch: {} }],
-            },
-        });
-        
-        const text = extractTextSafe(response) || "No updates found.";
-        const groundingChunks: GroundingChunk[] = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
-
-        return { text, groundingChunks };
-    } catch (error) {
-        console.error("Error fetching local updates:", error);
-        return { text: "Could not fetch local updates. Please check your API Key and connection.", groundingChunks: [] };
+  try {
+    const client = getAI();
+    let locationContext = '';
+    if (typeof location === 'string' && location.trim() !== '') {
+      locationContext = `in the area around "${location}"`;
+    } else if (typeof location === 'object' && location?.latitude && location.longitude) {
+      locationContext = `around latitude: ${location.latitude}, longitude: ${location.longitude}`;
+    } else {
+      locationContext = 'in the general Cuttack area';
     }
+
+    const langInstruction = language === 'or'
+      ? "OUTPUT MUST BE IN ODIA (ORIYA) SCRIPT."
+      : "";
+
+    // NEW PROMPT STRATEGY: Daily Briefing / Situation Report (SITREP)
+    const prompt = `
+            You are a kind, empathetic, and authoritative Hospital Guide for SCB Medical College, Cuttack.
+            A patient or their relative is looking for the "Daily Situation Report" to navigate the campus.
+
+            **YOUR TASK:**
+            Search Google for the VERY LATEST updates (last 24 hours) from:
+            1. Commissionerate Police Cuttack-Bhubaneswar (Traffic updates)
+            2. Cuttack Municipal Corporation (CMC) or Collector Cuttack (Road works/Closures)
+            3. SCB Medical College Official Notices (Hospital admin news)
+            4. Local news (Weather, Strikes/Bandhs)
+            
+            ${langInstruction}
+
+            **TONE:** 
+            Kind, Clear, and Explanatory. Like a helpful volunteer speaking to a worried patient.
+            Avoid "police jargon" or dry lists. Explain *what it means* for the patient.
+
+            **STRUCTURE OF RESPONSE:**
+            1. **Headline:** A 3-5 word summary of the current status (e.g., "Normal Traffic Flow Today" or "Heavy Rain Alert").
+            2. **The Situation Report:** Write 2-3 sentences summarizing the key events. If there is a traffic diversion, explain *where* to go instead. 
+            
+            **CRITICAL RULES:**
+            *   **NO FAKE NEWS:** If you find NO recent updates, state clearly: "We have checked with local authorities and there are no major incidents reported at this time."
+            *   **NO BULLET POINTS:** Write in natural, comforting sentences.
+            *   **INTEGRITY:** If you mention a specific road closure or event, ensure it is based on a real recent source.
+        `;
+    const response = await client.models.generateContent({
+      model: "gemini-2.5-flash",
+      contents: prompt,
+      config: {
+        tools: [{ googleSearch: {} }],
+      },
+    });
+
+    const text = extractTextSafe(response) || "No major alerts.";
+    const groundingChunks: GroundingChunk[] = response.candidates?.[0]?.groundingMetadata?.groundingChunks || [];
+
+    return { text, groundingChunks };
+  } catch (error) {
+    console.error("Error fetching local updates:", error);
+    return { text: "Could not fetch local updates. Check connection.", groundingChunks: [] };
+  }
 };
 
 let chatInstance: Chat | null = null;
 let currentChatLanguage: Language = 'en';
 
 export const startChat = (language: Language = 'en'): Chat => {
-    const client = getAI();
-    // If language changed, create new instance to reset system instruction
-    if (!chatInstance || currentChatLanguage !== language) {
-        currentChatLanguage = language;
-        const langInstruction = language === 'or' 
-            ? "You MUST reply in Odia (Oriya) language." 
-            : "";
-            
-        chatInstance = client.chats.create({
-            model: 'gemini-2.5-flash',
-            config: {
-                systemInstruction: `You are a helpful assistant for the Hyperlocal Navi-Assistant app. Answer questions about navigation, local places, or general topics concisely. ${langInstruction}`,
-            },
-        });
-    }
-    return chatInstance;
+  const client = getAI();
+  // If language changed, create new instance to reset system instruction
+  if (!chatInstance || currentChatLanguage !== language) {
+    currentChatLanguage = language;
+    const langInstruction = language === 'or'
+      ? "You MUST reply in Odia (Oriya) language."
+      : "";
+
+    chatInstance = client.chats.create({
+      model: 'gemini-2.5-flash',
+      config: {
+        systemInstruction: `You are a helpful assistant for the Hyperlocal Navi-Assistant app. Answer questions about navigation, local places, or general topics concisely. ${langInstruction}`,
+      },
+    });
+  }
+  return chatInstance;
 };
 
 export const sendMessageToChat = async (chat: Chat, message: string) => {
-    try {
-        const response = await chat.sendMessageStream({ message });
-        return response; 
-    } catch (error) {
-        console.error("Error sending message to chat:", error);
-        throw new Error("Failed to get a response from the assistant. Check API Key.");
-    }
+  try {
+    const response = await chat.sendMessageStream({ message });
+    return response;
+  } catch (error) {
+    console.error("Error sending message to chat:", error);
+    throw new Error("Failed to get a response from the assistant. Check API Key.");
+  }
+};
+
+export const enhanceTrafficReport = async (text: string, language: Language): Promise<string> => {
+  try {
+    const client = getAI();
+    const langInstruction = language === 'or'
+      ? "The output MUST be in Odia (Oriya) language."
+      : "The output MUST be in English.";
+
+    const prompt = `
+            A user has submitted a traffic report: "${text}".
+            Rewrite this to be ultra-concise (under 10 words) for a dashboard ticker. 
+            Do not add new facts.
+            ${langInstruction}
+        `;
+
+    const response = await client.models.generateContent({
+      model: 'gemini-2.5-flash',
+      contents: prompt,
+    });
+
+    return extractTextSafe(response).trim();
+  } catch (error) {
+    console.error("Error enhancing report:", error);
+    return text; // Fallback to original text
+  }
 };

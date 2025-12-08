@@ -8,10 +8,10 @@ interface InstructionsProps {
 
 const InstructionItem = ({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) => (
     <div className="flex items-start space-x-4">
-        <div className="flex-shrink-0 text-cyan-400 mt-1">{icon}</div>
+        <div className="flex-shrink-0 text-blue-600 mt-1">{icon}</div>
         <div>
-            <h4 className="font-bold text-lg text-gray-100">{title}</h4>
-            <p className="text-gray-300">{description}</p>
+            <h4 className="font-bold text-lg text-slate-800">{title}</h4>
+            <p className="text-slate-600">{description}</p>
         </div>
     </div>
 );
@@ -19,16 +19,16 @@ const InstructionItem = ({ icon, title, description }: { icon: React.ReactNode, 
 const Instructions: React.FC<InstructionsProps> = ({ onClose }) => {
   return (
     <div 
-      className="fixed inset-0 bg-black/70 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn"
+      className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-fadeIn"
       onClick={onClose}
     >
       <div 
-        className="bg-gray-800 border border-gray-700 rounded-xl shadow-2xl w-full max-w-lg p-6 md:p-8 space-y-6 max-h-[90vh] overflow-y-auto"
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-lg p-6 md:p-8 space-y-6 max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="text-center">
-            <h2 className="text-2xl font-bold text-cyan-400">App Guide</h2>
-            <p className="text-gray-400 mt-1">Here's a quick look at what each feature does.</p>
+            <h2 className="text-2xl font-bold text-blue-800">App Guide</h2>
+            <p className="text-slate-500 mt-1">Here's a quick look at what each feature does.</p>
         </div>
         
         <div className="space-y-6">
@@ -57,7 +57,7 @@ const Instructions: React.FC<InstructionsProps> = ({ onClose }) => {
         <div className="text-center pt-4">
             <button 
                 onClick={onClose}
-                className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-6 rounded-lg transition-colors"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-xl transition-colors shadow-md"
             >
                 Got It!
             </button>

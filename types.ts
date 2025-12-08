@@ -58,4 +58,19 @@ export interface ItineraryRoute {
   travelTime?: string;
 }
 
+// --- New Types for Traffic Reporting ---
+
+export type TrafficSeverity = 'light' | 'moderate' | 'heavy' | 'accident' | 'closure';
+
+export interface UserTrafficReport {
+  id: string;
+  timestamp: number;
+  severity: TrafficSeverity;
+  location: string;
+  description: string;
+  originalText?: string;
+  reporterName?: string; // New: User Alias (e.g., "Neon Scout")
+  verificationCount?: number; // New: Social proof counter
+}
+
 export type Language = 'en' | 'or';
