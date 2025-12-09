@@ -3,9 +3,16 @@ import { Language } from './types';
 
 export const translations = {
   en: {
-    appName: "Hyperlocal Navi-Assistant",
-    welcome: "Welcome to My Amazing App",
-    welcomeSub: "Your AI companion for navigating tricky local roads. What would you like to do?",
+    appName: "SCB Navigation",
+    welcome: "SCB Medical Navigation",
+    welcomeSub: "Find Emergency, OPD, or any department instantly.",
+    // Emergency Section
+    emergencyButton: "EMERGENCY HELP",
+    emergencySubtext: "Tap for immediate directions to Emergency/Casualty",
+    quickCallAmbulance: "Call Ambulance",
+    quickMapOverview: "Campus Map",
+    quickAskHelp: "Ask for Help",
+    orExplore: "or explore",
     gettingLocation: "Getting your location...",
     manualLocationSet: "Location manually set to:",
     planRouteTitle: "Plan Smart Route",
@@ -23,6 +30,11 @@ export const translations = {
     navPlanner: "Planner",
     navUpdates: "Updates",
     navChat: "Chat",
+    // Quick destination chips
+    quickDestEmergency: "🚨 Emergency",
+    quickDestOPD: "🩺 OPD",
+    quickDestBloodBank: "🩸 Blood Bank",
+    quickDestMainGate: "🚪 Main Gate",
     // Planner
     navMode: "Navigation (A to B)",
     dayMode: "Day Planner",
@@ -51,8 +63,12 @@ export const translations = {
     savedPlans: "Saved Plans",
     yourItinerary: "Your Day Plan",
     // Chat
-    chatWelcome: "Hello! I know the SCB campus inside out. Ask me anything!",
-    chatInput: "Type your question...",
+    chatWelcome: "Hello! I'm here to help. Need directions to Emergency, OPD, or any department?",
+    chatInput: "Type your question or tap a suggestion below...",
+    // Chat quick suggestions
+    chatSuggest1: "Where is Emergency?",
+    chatSuggest2: "OPD timings",
+    chatSuggest3: "Nearest parking",
     // Updates UI 3.0 (Briefing Model)
     updatesHeader: "Daily Campus Briefing",
     updatesSub: "Real-time checks for SCB Medical College",
@@ -99,9 +115,16 @@ export const translations = {
     hrsAgo: "hrs ago"
   },
   or: {
-    appName: "ହାଇପରଲୋକାଲ ନେଭି-ଆସିଷ୍ଟାଣ୍ଟ",
-    welcome: "ସ୍ୱାଗତ!",
-    welcomeSub: "ଜଟିଳ ରାସ୍ତାରେ ଯାତ୍ରା ପାଇଁ ଆପଣଙ୍କର AI ସାଥୀ | ଆପଣ କଣ କରିବାକୁ ଚାହୁଁଛନ୍ତି?",
+    appName: "SCB ନେଭିଗେସନ୍",
+    welcome: "SCB ମେଡିକାଲ୍ ନେଭିଗେସନ୍",
+    welcomeSub: "ଜରୁରୀକାଳୀନ, OPD, କିମ୍ବା ଅନ୍ୟ ବିଭାଗ ଖୋଜନ୍ତୁ |",
+    // Emergency Section
+    emergencyButton: "ଜରୁରୀ ସାହାଯ୍ୟ",
+    emergencySubtext: "ଜରୁରୀକାଳୀନ ବିଭାଗ ପାଇଁ ତୁରନ୍ତ ଦିଗ ନିର୍ଦ୍ଦେଶ",
+    quickCallAmbulance: "ଆମ୍ବୁଲାନ୍ସ ଡାକନ୍ତୁ",
+    quickMapOverview: "କ୍ୟାମ୍ପସ ମାପ୍",
+    quickAskHelp: "ସାହାଯ୍ୟ ମାଗନ୍ତୁ",
+    orExplore: "ବା ଅନ୍ୟ ବିକଳ୍ପ",
     gettingLocation: "ଆପଣଙ୍କ ଅବସ୍ଥିତି ଖୋଜା ଚାଲିଛି...",
     manualLocationSet: "ଅବସ୍ଥିତି ସେଟ୍ ହୋଇଛି:",
     planRouteTitle: "ସ୍ମାର୍ଟ ରୁଟ୍ ଯୋଜନା",
@@ -119,6 +142,11 @@ export const translations = {
     navPlanner: "ଯୋଜନା",
     navUpdates: "ଖବର",
     navChat: "ଚାଟ୍",
+    // Quick destination chips
+    quickDestEmergency: "🚨 ଜରୁରୀକାଳୀନ",
+    quickDestOPD: "🩺 OPD",
+    quickDestBloodBank: "🩸 ରକ୍ତ ଭଣ୍ଡାର",
+    quickDestMainGate: "🚪 ମୁଖ୍ୟ ଫାଟକ",
     // Planner
     navMode: "ନେଭିଗେସନ୍ (ଏ ରୁ ବି)",
     dayMode: "ଦିନ ଯୋଜନା",
@@ -147,8 +175,12 @@ export const translations = {
     savedPlans: "ସେଭ୍ ହୋଇଥିବା ଯୋଜନା",
     yourItinerary: "ଆପଣଙ୍କ ଦିନର ଯୋଜନା",
     // Chat
-    chatWelcome: "ନମସ୍କାର! ମୁଁ SCB କ୍ୟାମ୍ପସ ବିଷୟରେ ସବୁ ଜାଣେ | ମୋତେ କିଛି ବି ପଚାରନ୍ତୁ!",
-    chatInput: "ଆପଣଙ୍କ ପ୍ରଶ୍ନ ଲେଖନ୍ତୁ...",
+    chatWelcome: "ନମସ୍କାର! ମୁଁ ସାହାଯ୍ୟ କରିବାକୁ ଏଠାରେ ଅଛି | ଜରୁରୀକାଳୀନ, OPD, କିମ୍ବା ଅନ୍ୟ ବିଭାଗ ପାଇଁ ଦିଗ ନିର୍ଦ୍ଦେଶ ଚାହୁଁଛନ୍ତି କି?",
+    chatInput: "ଆପଣଙ୍କ ପ୍ରଶ୍ନ ଲେଖନ୍ତୁ ବା ନିମ୍ନରେ ଏକ ସୁଝାବ ଚୟନ କରନ୍ତୁ...",
+    // Chat quick suggestions
+    chatSuggest1: "ଜରୁରୀକାଳୀନ କେଉଁଠି?",
+    chatSuggest2: "OPD ସମୟ",
+    chatSuggest3: "ନିକଟତମ ପାର୍କିଂ",
     // Updates UI 3.0
     updatesHeader: "ଦୈନିକ କ୍ୟାମ୍ପସ ଖବର",
     updatesSub: "SCB ମେଡିକାଲ୍ କଲେଜ୍ ପାଇଁ ରିଅଲ୍-ଟାଇମ୍ ଅପଡେଟ୍",

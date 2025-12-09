@@ -2,14 +2,13 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 // Your web app's Firebase configuration
-// These values are injected by Vite at build time from your .env or Vercel settings
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY", // Placeholder as per request
-    authDomain: "scb-hospital-navigation-app.firebaseapp.com",
-    projectId: "scb-hospital-navigation-app",
-    storageBucket: "scb-hospital-navigation-app.firebasestorage.app",
-    messagingSenderId: "YOUR_SENDER_ID",
-    appId: "YOUR_APP_ID"
+    apiKey: "AIzaSyD3hqT8usseOu1Jol2xMmjNUjbKTXOa4tY",
+    authDomain: "scb-indoor-navigation.firebaseapp.com",
+    projectId: "scb-indoor-navigation",
+    storageBucket: "scb-indoor-navigation.firebasestorage.app",
+    messagingSenderId: "590547766764",
+    appId: "1:590547766764:web:2755b35fe5c7ecb44f04c9",
 };
 
 // Initialize Firebase

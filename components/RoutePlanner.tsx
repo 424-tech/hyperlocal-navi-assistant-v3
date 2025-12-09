@@ -97,6 +97,23 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ location, manualLocation, l
 
   const t = translations[language];
 
+  // Quick destination chips
+  const quickDestinations = [
+    { key: 'emergency', label: t.quickDestEmergency, value: 'Emergency Department / Casualty' },
+    { key: 'opd', label: t.quickDestOPD, value: 'OPD Registration' },
+    { key: 'blood', label: t.quickDestBloodBank, value: 'Blood Bank' },
+    { key: 'gate', label: t.quickDestMainGate, value: 'Main Gate' },
+  ];
+
+  // Check for emergency mode from Home screen
+  useEffect(() => {
+    const emergencyMode = sessionStorage.getItem('scb_emergency_mode');
+    if (emergencyMode === 'true') {
+      setDestination('Emergency Department / Casualty');
+      sessionStorage.removeItem('scb_emergency_mode');
+    }
+  }, []);
+
   // Load saved items on mount
   useEffect(() => {
     try {
@@ -243,6 +260,26 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ location, manualLocation, l
           <form onSubmit={handleSubmit} className="space-y-4 transition-all duration-500 bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
             {mode === 'route' ? (
               <>
+                {/* Quick Destination Chips */}
+                <div className="flex flex-wrap gap-2 mb-3">
+                  {quickDestinations.map((dest) => (
+                    <button
+                      key={dest.key}
+                      type="button"
+                      onClick={() => setDestination(dest.value)}
+                      className={`px-3 py-1.5 rounded-full text-sm font-medium transition-all border ${destination === dest.value
+                          ? dest.key === 'emergency'
+                            ? 'bg-red-100 text-red-700 border-red-300'
+                            : 'bg-blue-100 text-blue-700 border-blue-300'
+                          : dest.key === 'emergency'
+                            ? 'bg-red-50 text-red-600 border-red-100 hover:bg-red-100'
+                            : 'bg-slate-100 text-slate-600 border-slate-200 hover:bg-slate-200'
+                        }`}
+                    >
+                      {dest.label}
+                    </button>
+                  ))}
+                </div>
                 <div>
                   <label htmlFor="destination" className="block text-sm font-semibold text-slate-700 mb-1">{t.destLabel}</label>
                   <input

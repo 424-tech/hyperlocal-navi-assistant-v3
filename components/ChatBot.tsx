@@ -113,6 +113,31 @@ const ChatBot: React.FC<ChatBotProps> = ({ language, location }) => {
         ))}
         <div ref={messagesEndRef} />
       </div>
+      {/* Quick Suggestion Chips */}
+      <div className="px-4 py-2 bg-slate-50 border-t border-slate-100 flex gap-2 overflow-x-auto">
+        <button
+          onClick={() => handleSend(t.chatSuggest1)}
+          disabled={loading}
+          className="flex-shrink-0 px-3 py-1.5 bg-red-50 text-red-600 border border-red-100 rounded-full text-xs font-semibold hover:bg-red-100 transition-colors disabled:opacity-50"
+        >
+          {t.chatSuggest1}
+        </button>
+        <button
+          onClick={() => handleSend(t.chatSuggest2)}
+          disabled={loading}
+          className="flex-shrink-0 px-3 py-1.5 bg-blue-50 text-blue-600 border border-blue-100 rounded-full text-xs font-semibold hover:bg-blue-100 transition-colors disabled:opacity-50"
+        >
+          {t.chatSuggest2}
+        </button>
+        <button
+          onClick={() => handleSend(t.chatSuggest3)}
+          disabled={loading}
+          className="flex-shrink-0 px-3 py-1.5 bg-slate-100 text-slate-600 border border-slate-200 rounded-full text-xs font-semibold hover:bg-slate-200 transition-colors disabled:opacity-50"
+        >
+          {t.chatSuggest3}
+        </button>
+      </div>
+      {/* Input Area */}
       <div className="p-4 bg-white border-t border-slate-200 flex items-center gap-3">
         <button
           onClick={handleShareLocation}
