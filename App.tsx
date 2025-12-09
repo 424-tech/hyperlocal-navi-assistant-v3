@@ -75,7 +75,7 @@ const App: React.FC = () => {
 
   return (
     <div className="h-full w-full bg-slate-50 text-slate-900 font-sans flex flex-col overflow-hidden relative">
-      {showInstructions && <Instructions onClose={() => setShowInstructions(false)} />}
+      {showInstructions && <Instructions onClose={() => setShowInstructions(false)} language={language} />}
       <ManualLocationModal
         isOpen={isManualLocationModalOpen}
         onClose={() => setIsManualLocationModalOpen(false)}

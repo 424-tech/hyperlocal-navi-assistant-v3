@@ -93,9 +93,46 @@ const LocalUpdates: React.FC<LocalUpdatesProps> = ({ location, manualLocation, l
         }
         const utterance = new SpeechSynthesisUtterance(updates.text);
         const voices = window.speechSynthesis.getVoices();
-        const preferredVoice = voices.find(v => v.lang.includes('IN') || v.lang.includes('hi'));
+
+        let preferredVoice = null;
+
+        if (language === 'or') {
+            // Priority 1: Odia Voice
+            preferredVoice = voices.find(v => v.lang.includes('or') || v.lang.includes('ori') || v.name.includes('Odia') || v.name.includes('Oriya'));
+
+            // Priority 2: Hindi Voice (often acceptable fallback/better than US English)
+            if (!preferredVoice) {
+                preferredVoice = voices.find(v => v.lang.includes('hi') || v.lang.includes('hin') || v.name.includes('Hindi') || v.name.includes('Lekha'));
+            }
+
+            // Priority 3: Indian English
+            if (!preferredVoice) {
+                preferredVoice = voices.find(v => v.lang.includes('IN') || v.name.includes('India'));
+            }
+        } else {
+            // ENGLISH STRATEGY
+            // 1. Try specific high-quality / female voices
+            const targetVoices = ['Samantha', 'Google UK English Female', 'Google US English', 'Karen', 'Rishi', 'Moira'];
+            for (const name of targetVoices) {
+                preferredVoice = voices.find(v => v.name === name);
+                if (preferredVoice) break;
+            }
+
+            // 2. If not found, look for any English voice with "Female" in name
+            if (!preferredVoice) {
+                preferredVoice = voices.find(v => v.name.includes('Female') && v.lang.startsWith('en'));
+            }
+
+            // 3. Fallback to any English voice
+            if (!preferredVoice) {
+                preferredVoice = voices.find(v => v.lang.startsWith('en'));
+            }
+        }
+
         if (preferredVoice) utterance.voice = preferredVoice;
-        utterance.rate = 0.9;
+        utterance.rate = 0.9; // Slightly slower for better clarity
+        utterance.pitch = 1.0;
+
         utterance.onend = () => setIsSpeaking(false);
         window.speechSynthesis.speak(utterance);
         setIsSpeaking(true);
@@ -129,7 +166,7 @@ const LocalUpdates: React.FC<LocalUpdatesProps> = ({ location, manualLocation, l
                 <div className="flex justify-between items-center mb-4">
                     <div>
                         <h1 className="text-2xl font-black text-slate-800 tracking-tight">Campus Pulse</h1>
-                        <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">{new Date().toLocaleDateString('en-US', { weekday: 'long', split: ' ', month: 'short', day: 'numeric' })}</p>
+                        <p className="text-xs font-semibold text-slate-500 uppercase tracking-widest">{new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</p>
                     </div>
                     {/* Weather Widget (Mock) */}
                     <div className="flex items-center gap-2 bg-white px-3 py-1.5 rounded-full shadow-sm border border-slate-200">
@@ -304,8 +341,8 @@ const LocalUpdates: React.FC<LocalUpdatesProps> = ({ location, manualLocation, l
 
                                     <div className="mt-3 flex items-center gap-3">
                                         <span className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border ${report.severity === 'heavy' ? 'bg-red-50 text-red-600 border-red-100' :
-                                                report.severity === 'moderate' ? 'bg-yellow-50 text-yellow-600 border-yellow-100' :
-                                                    'bg-green-50 text-green-600 border-green-100'
+                                            report.severity === 'moderate' ? 'bg-yellow-50 text-yellow-600 border-yellow-100' :
+                                                'bg-green-50 text-green-600 border-green-100'
                                             }`}>
                                             {report.severity}
                                         </span>

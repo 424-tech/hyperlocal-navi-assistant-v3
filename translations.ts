@@ -112,7 +112,19 @@ export const translations = {
     users: "users",
     justNow: "Just now",
     minsAgo: "mins ago",
-    hrsAgo: "hrs ago"
+    hrsAgo: "hrs ago",
+    // App Guide
+    guideTitle: "App Guide",
+    guideSub: "Here's a quick look at what each feature does.",
+    guidePlanTitle: "Plan Smart Route",
+    guidePlanDesc: "Use this to get detailed, step-by-step directions. Our AI 'Thinks' like a local, considering real-time traffic, narrow streets, market days, and even temporary closures. Just enter your destination and any special requests (like 'avoid the crowded temple road').",
+    guideUpdatesTitle: "Local Updates",
+    guideUpdatesDesc: "Tap here to get a quick summary of what's happening around you right now. The AI scans for news on traffic jams, road closures, festivals, or other events that could affect your travel. It's like having a local news reporter just for you.",
+    guideChatTitle: "Ask Assistant",
+    guideChatDesc: "This is your personal chat assistant. Have a question? Just ask! You can ask for directions, find the nearest pharmacy, or even ask about the weather. For example, try asking: 'Where can I find the best chai near me?'",
+    guideReportTitle: "Report Traffic",
+    guideReportDesc: "This feature will allow you to help other users by reporting traffic jams, accidents, or road closures you see. By working together, we can make navigation easier for everyone.",
+    gotIt: "Got It!"
   },
   or: {
     appName: "SCB ନେଭିଗେସନ୍",
@@ -224,6 +236,18 @@ export const translations = {
     users: "ଜଣ",
     justNow: "ବର୍ତ୍ତମାନ",
     minsAgo: "ମିନିଟ୍ ପୂର୍ବେ",
-    hrsAgo: "ଘଣ୍ଟା ପୂର୍ବେ"
+    hrsAgo: "ଘଣ୍ଟା ପୂର୍ବେ",
+    // App Guide
+    guideTitle: "ଆପ୍ ଗାଇଡ୍",
+    guideSub: "ଏହି ଆପ୍ କିପରି କାମ କରେ ତାହାର ଏକ ସଂକ୍ଷିପ୍ତ ବିବରଣୀ |",
+    guidePlanTitle: "ସ୍ମାର୍ଟ ରୁଟ୍ ଯୋଜନା",
+    guidePlanDesc: "ବିସ୍ତୃତ, ପଦକ୍ଷେପ-ଦ୍ୱାରା-ପଦକ୍ଷେପ ଦିଗ ନିର୍ଦ୍ଦେଶ ପାଇବାକୁ ଏହା ବ୍ୟବହାର କରନ୍ତୁ | ଆମର AI ଜଣେ ସ୍ଥାନୀୟ ବ୍ୟକ୍ତିଙ୍କ ଭଳି ଚିନ୍ତା କରେ, ଟ୍ରାଫିକ୍, ସଂକୀର୍ଣ୍ଣ ରାସ୍ତା ଏବଂ ବନ୍ଦ ରାସ୍ତାକୁ ବିଚାରକୁ ନିଏ |",
+    guideUpdatesTitle: "ସ୍ଥାନୀୟ ଖବର",
+    guideUpdatesDesc: "ବର୍ତ୍ତମାନ ଆପଣଙ୍କ ଚାରିପାଖରେ କଣ ଘଟୁଛି ଜାଣିବା ପାଇଁ ଏଠାରେ ଟ୍ୟାପ୍ କରନ୍ତୁ | ଟ୍ରାଫିକ୍ ଜାମ୍, ରାସ୍ତା ବନ୍ଦ କିମ୍ବା ଅନ୍ୟାନ୍ୟ ଘଟଣା ବିଷୟରେ ଜାଣନ୍ତୁ |",
+    guideChatTitle: "ସାହାଯ୍ୟ ମାଗନ୍ତୁ",
+    guideChatDesc: "ଏହା ଆପଣଙ୍କର ବ୍ୟକ୍ତିଗତ ସାହାଯ୍ୟକାରୀ | କିଛି ପ୍ରଶ୍ନ ଅଛି? କେବଳ ପଚାରନ୍ତୁ! ଆପଣ ଦିଗ ନିର୍ଦ୍ଦେଶ, ଔଷଧ ଦୋକାନ କିମ୍ବା ଅନ୍ୟ କିଛି ବିଷୟରେ ପଚାରିପାରିବେ |",
+    guideReportTitle: "ଟ୍ରାଫିକ୍ ରିପୋର୍ଟ",
+    guideReportDesc: "ଅନ୍ୟମାନଙ୍କୁ ସାହାଯ୍ୟ କରିବା ପାଇଁ ଆପଣ ଟ୍ରାଫିକ୍ ଜାମ୍ କିମ୍ବା ଦୁର୍ଘଟଣା ବିଷୟରେ ଜଣାଇପାରିବେ |",
+    gotIt: "ବୁଝିଗଲି!"
   }
 };
