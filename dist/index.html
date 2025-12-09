@@ -41,7 +41,22 @@
           colors: {
             primary: '#007AFF', // Apple Blue
             secondary: '#8E8E93', // Apple Gray
-          }
+            emergency: '#DC2626', // Emergency Red
+          },
+          animation: {
+            'emergency-pulse': 'emergency-pulse 2s ease-in-out infinite',
+            'emergency-glow': 'emergency-glow 1.5s ease-in-out infinite alternate',
+          },
+          keyframes: {
+            'emergency-pulse': {
+              '0%, 100%': { transform: 'scale(1)', opacity: '1' },
+              '50%': { transform: 'scale(1.02)', opacity: '0.9' },
+            },
+            'emergency-glow': {
+              '0%': { boxShadow: '0 0 5px rgba(220, 38, 38, 0.4), 0 0 10px rgba(220, 38, 38, 0.2)' },
+              '100%': { boxShadow: '0 0 15px rgba(220, 38, 38, 0.6), 0 0 30px rgba(220, 38, 38, 0.3)' },
+            },
+          },
         }
       }
     }
@@ -63,7 +78,7 @@
   }
 }
 </script>
-  <script type="module" crossorigin src="/assets/index-BB1Gis9Y.js"></script>
+  <script type="module" crossorigin src="/assets/index-CLJ5IhfW.js"></script>
 </head>
 
 <body
