@@ -1,4 +1,3 @@
-```
 import React, { useState, useEffect, useRef } from 'react';
 import { startChat, sendMessageToChat } from '../services/geminiService';
 import { Chat as GeminiChat } from '@google/genai';
@@ -63,7 +62,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ language, location }) => {
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'An unknown error occurred.';
-      setMessages(prev => [...prev, { sender: 'bot', text: `Sorry, something went wrong.${ errorMessage } ` }]);
+      setMessages(prev => [...prev, { sender: 'bot', text: 'Sorry, something went wrong. ' + errorMessage }]);
     } finally {
       setLoading(false);
     }
@@ -71,7 +70,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ language, location }) => {
   
   const handleShareLocation = () => {
     if (location.latitude && location.longitude) {
-        const locMsg = `My current location is Latitude: ${ location.latitude }, Longitude: ${ location.longitude }.`;
+        const locMsg = 'My current location is Latitude: ' + location.latitude + ', Longitude: ' + location.longitude + '.';
         handleSend(locMsg);
     } else {
         alert("Location not available yet. Please wait for GPS..");
@@ -88,17 +87,13 @@ const ChatBot: React.FC<ChatBotProps> = ({ language, location }) => {
     <div className="flex flex-col h-[calc(100vh-150px)] max-h-[70vh] bg-white rounded-2xl shadow-lg border border-slate-200 animate-fadeIn overflow-hidden">
       <div className="flex-grow p-4 overflow-y-auto space-y-4 bg-slate-50">
         {messages.map((msg, index) => (
-          <div key={index} className={`flex items - end gap - 2 ${ msg.sender === 'user' ? 'justify-end' : 'justify-start' } `}>
+          <div key={index} className={'flex items-end gap-2 ' + (msg.sender === 'user' ? 'justify-end' : 'justify-start')}>
             {msg.sender === 'bot' && (
               <div className="flex-shrink-0 w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center mb-1 shadow-sm">
                 <BotIcon />
               </div>
             )}
-            <div className={`max - w - [80 %] md: max - w - md px - 5 py - 3 rounded - 2xl shadow - sm text - sm leading - relaxed ${
-  msg.sender === 'user'
-    ? 'bg-blue-600 text-white rounded-br-none'
-    : 'bg-white text-slate-800 border border-slate-200 rounded-bl-none'
-} `}>
+            <div className={'max-w-[80%] md:max-w-md px-5 py-3 rounded-2xl shadow-sm text-sm leading-relaxed ' + (msg.sender === 'user' ? 'bg-blue-600 text-white rounded-br-none' : 'bg-white text-slate-800 border border-slate-200 rounded-bl-none')}>
               <p className="break-words">{msg.text}</p>
               {loading && msg.sender === 'bot' && index === messages.length - 1 && (
                 <div className="typing-indicator mt-1 opacity-70"><span>.</span><span>.</span><span>.</span></div>
@@ -139,23 +134,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ language, location }) => {
           <SendIcon />
         </button>
       </div>
-      <style>{`
-  .typing - indicator span {
-  display: inline - block;
-  animation: bounce 1.2s infinite;
-  margin: 0 1px;
-}
-        .typing - indicator span: nth - child(2) {
-  animation - delay: 0.2s;
-}
-        .typing - indicator span: nth - child(3) {
-  animation - delay: 0.4s;
-}
-@keyframes bounce {
-  0 %, 60 %, 100 % { transform: translateY(0); }
-  30 % { transform: translateY(-4px); }
-}
-`}</style>
+      <style>{'.typing-indicator span { display: inline-block; animation: bounce 1.2s infinite; margin: 0 1px; } .typing-indicator span:nth-child(2) { animation-delay: 0.2s; } .typing-indicator span:nth-child(3) { animation-delay: 0.4s; } @keyframes bounce { 0%, 60%, 100% { transform: translateY(0); } 30% { transform: translateY(-4px); } }'}</style>
     </div>
   );
 };
