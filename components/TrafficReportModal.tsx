@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { translations } from '../translations';
 import { Language, TrafficSeverity } from '../types';
@@ -39,31 +40,32 @@ const TrafficReportModal: React.FC<TrafficReportModalProps> = ({ isOpen, onClose
     setError(null);
 
     try {
-        if (!db) {
-            throw new Error("Community database is not connected. Please contact admin.");
-        }
-
         // Use Gemini to format the description nicely
         const rawText = `${description} at ${location}`;
         const enhancedDescription = await enhanceTrafficReport(rawText, language);
         
-        // Ensure a reporter name exists in session, or create one
         let myAlias = sessionStorage.getItem('scb_user_alias');
         if (!myAlias) {
             myAlias = generateAlias();
             sessionStorage.setItem('scb_user_alias', myAlias);
         }
 
-        // Add to Firebase
-        await addDoc(collection(db, "reports"), {
-            timestamp: serverTimestamp(), // Use server time
-            severity,
-            location,
-            description: enhancedDescription,
-            originalText: description,
-            reporterName: myAlias,
-            verificationCount: 1
-        });
+        if (db) {
+            // Add to Firebase if connected
+            await addDoc(collection(db, "reports"), {
+                timestamp: serverTimestamp(),
+                severity,
+                location,
+                description: enhancedDescription,
+                originalText: description,
+                reporterName: myAlias,
+                verificationCount: 1
+            });
+        } else {
+            // Mock submission for Demo Mode
+            console.log("Mock Submit:", { location, severity, description: enhancedDescription });
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Fake network delay
+        }
 
         setSuccess(true);
         setTimeout(() => {
@@ -140,6 +142,10 @@ const TrafficReportModal: React.FC<TrafficReportModalProps> = ({ isOpen, onClose
                 </div>
                 
                 {error && <p className="text-red-500 text-sm bg-red-50 p-2 rounded border border-red-100">{error}</p>}
+
+                {!db && (
+                    <p className="text-xs text-slate-400 text-center italic">Demo Mode: Report will be simulated.</p>
+                )}
 
                 <div className="flex justify-end space-x-3 pt-3">
                     <button

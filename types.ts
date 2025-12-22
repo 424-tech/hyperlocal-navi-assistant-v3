@@ -1,9 +1,7 @@
 
-
 export interface GeolocationState {
   latitude: number | null;
   longitude: number | null;
-  accuracy: number | null;
 }
 
 export interface GroundingChunk {
@@ -22,25 +20,12 @@ export interface RouteCoordinate {
   lng: number;
 }
 
-export interface RouteStep {
-  description: string;
-  path: RouteCoordinate[];
-}
-
 export interface Landmark {
   name: string;
   position: RouteCoordinate;
+  floor?: number;
+  internalLandmark?: string;
 }
-
-export type TrafficLevel = 'light' | 'moderate' | 'heavy';
-
-export interface TrafficSegment {
-  path: RouteCoordinate[];
-  level: TrafficLevel;
-  description: string;
-}
-
-// --- New Types for Day Planner ---
 
 export interface ItineraryLocation {
   name: string;
@@ -50,6 +35,8 @@ export interface ItineraryLocation {
   time?: string;
   duration?: string;
   sequence?: number;
+  floor?: number;
+  internalLandmark?: string;
 }
 
 export interface ItineraryRoute {
@@ -60,8 +47,6 @@ export interface ItineraryRoute {
   travelTime?: string;
 }
 
-// --- New Types for Traffic Reporting ---
-
 export type TrafficSeverity = 'light' | 'moderate' | 'heavy' | 'accident' | 'closure';
 
 export interface UserTrafficReport {
@@ -71,11 +56,8 @@ export interface UserTrafficReport {
   location: string;
   description: string;
   originalText?: string;
-  reporterName?: string; // New: User Alias (e.g., "Neon Scout")
-  verificationCount?: number; // New: Social proof counter
+  reporterName?: string;
+  verificationCount?: number;
 }
-
-
-
 
 export type Language = 'en' | 'or';
