@@ -212,6 +212,25 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ location, manualLocation, l
     ? [location.latitude, location.longitude]
     : [20.4795, 85.8778]; // Fallback to Cuttack
 
+  const destinationCoords: [number, number] | null = React.useMemo(() => {
+    if (result && mode === 'route') {
+      // Extract from last step
+      if (result.steps.length > 0) {
+        const lastStep = result.steps[result.steps.length - 1];
+        if (lastStep.path.length > 0) {
+          const end = lastStep.path[lastStep.path.length - 1];
+          return [end.lat, end.lng];
+        }
+      }
+      // Fallback: check landmarks
+      if (result.landmarks.length > 0 && destination) {
+        const destLandmark = result.landmarks.find(l => l.name.toLowerCase().includes(destination.toLowerCase()));
+        if (destLandmark) return [destLandmark.position.lat, destLandmark.position.lng];
+      }
+    }
+    return null;
+  }, [result, mode, destination]);
+
   return (
     <div className="animate-fadeIn max-w-2xl mx-auto">
       <div className="flex justify-center mb-6 space-x-2 bg-slate-200 p-1 rounded-full w-fit mx-auto">
@@ -330,7 +349,7 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ location, manualLocation, l
       )}
 
       {result && (
-        <div className="mt-6 animate-fadeIn space-y-4">
+        <div className="mt-6 animate-slide-up space-y-4">
 
           <Map
             userLocation={userLocation}
@@ -342,6 +361,8 @@ const RoutePlanner: React.FC<RoutePlannerProps> = ({ location, manualLocation, l
             itineraryLocations={result.locations}
             itineraryLines={result.lines}
             highlightedItineraryIndex={activeItineraryIndex}
+            destinationLocation={destinationCoords}
+            destinationName={mode === 'route' ? destination : ''}
           />
 
           {mode === 'route' && result.steps.length > 0 && (

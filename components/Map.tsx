@@ -39,6 +39,20 @@ const userIcon = L.divIcon({
     iconAnchor: [16, 16] // Center of the 32x32 container
 });
 
+const destinationIcon = L.divIcon({
+    className: 'destination-marker',
+    html: `<div style="position: relative; width: 40px; height: 40px;">
+             <div style="position: absolute; bottom: 0; left: 50%; transform: translateX(-50%); width: 12px; height: 4px; background: rgba(0,0,0,0.3); border-radius: 50%; filter: blur(2px);"></div>
+             <svg width="40" height="40" viewBox="0 0 24 24" fill="#ef4444" style="filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3)); position: relative; z-index: 10;">
+               <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+               <circle cx="12" cy="9" r="3.5" fill="white"/>
+             </svg>
+           </div>`,
+    iconSize: [40, 40],
+    iconAnchor: [20, 40],
+    popupAnchor: [0, -40]
+});
+
 const landmarkIconDiv = L.divIcon({
     className: 'bg-transparent',
     html: '<div style="color: #facc15; filter: drop-shadow(0 0 2px rgba(0,0,0,0.5));"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg></div>',
@@ -56,6 +70,8 @@ interface MapProps {
     itineraryLocations?: ItineraryLocation[];
     itineraryLines?: ItineraryRoute[];
     highlightedItineraryIndex?: number | null;
+    destinationLocation?: [number, number] | null;
+    destinationName?: string;
 }
 
 // Helper: Strict Coordinate Validator
@@ -68,18 +84,35 @@ const isValidCoord = (lat: any, lng: any): boolean => {
 // Component to handle map bounds updates (auto-center on load)
 const MapController = ({
     userLocation,
-    firstLoad
+    firstLoad,
+    flyToTarget
 }: {
     userLocation: [number, number],
-    firstLoad: boolean
+    firstLoad: boolean,
+    flyToTarget?: [number, number] | null
 }) => {
     const map = useMap();
+
+    // Fix map rendering issues in dynamic layouts
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            map.invalidateSize();
+        }, 100);
+        return () => clearTimeout(timer);
+    }, [map]);
 
     useEffect(() => {
         if (firstLoad && isValidCoord(userLocation[0], userLocation[1])) {
             map.flyTo(userLocation, 16, { animate: true, duration: 2 });
         }
     }, [firstLoad, userLocation, map]);
+
+    // Handle specific fly-to requests
+    useEffect(() => {
+        if (flyToTarget && isValidCoord(flyToTarget[0], flyToTarget[1])) {
+            map.flyTo(flyToTarget, 18, { animate: true, duration: 1.5 });
+        }
+    }, [flyToTarget, map]);
 
     return null;
 };
@@ -109,10 +142,23 @@ export const Map: React.FC<MapProps> = ({
     currentStepIndex = 0,
     itineraryLocations = [],
     itineraryLines = [],
-    highlightedItineraryIndex = null
+    highlightedItineraryIndex = null,
+    destinationLocation = null,
+    destinationName = ''
 }) => {
     const [mapInstance, setMapInstance] = React.useState<L.Map | null>(null);
     const [firstLoad, setFirstLoad] = React.useState(true);
+
+    // Calculate dynamic fly-to target based on interactions
+    const flyToTarget = React.useMemo(() => {
+        if (highlightedItineraryIndex !== null && itineraryLocations[highlightedItineraryIndex]) {
+            const loc = itineraryLocations[highlightedItineraryIndex];
+            if (isValidCoord(loc.lat, loc.lng)) {
+                return [loc.lat, loc.lng] as [number, number];
+            }
+        }
+        return null;
+    }, [highlightedItineraryIndex, itineraryLocations]);
 
     // When user location becomes valid for the first time, mark loaded
     useEffect(() => {
@@ -148,7 +194,22 @@ export const Map: React.FC<MapProps> = ({
                     url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
                 />
 
-                <MapController userLocation={userLocation} firstLoad={firstLoad} />
+                <MapController userLocation={userLocation} firstLoad={firstLoad} flyToTarget={flyToTarget} />
+
+                {/* Heads-Up Navigation Overlay */}
+                {destinationName && (
+                    <div className="absolute top-4 right-4 z-[1000] heading-badge bg-white/95 backdrop-blur-sm border border-blue-100 pr-4 pl-3 py-2 rounded-full shadow-lg flex items-center gap-3 max-w-[80vw]">
+                        <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white ring-2 ring-white shadow-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clipRule="evenodd" />
+                            </svg>
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider leading-none mb-0.5">Heading To</span>
+                            <span className="font-bold text-slate-800 text-sm truncate max-w-[150px] leading-tight">{destinationName}</span>
+                        </div>
+                    </div>
+                )}
 
                 {/* User Location & Accuracy */}
                 {isValidCoord(userLocation[0], userLocation[1]) && (
@@ -222,6 +283,13 @@ export const Map: React.FC<MapProps> = ({
                         </Marker>
                     );
                 })}
+
+                {/* Destination Marker */}
+                {destinationLocation && isValidCoord(destinationLocation[0], destinationLocation[1]) && (
+                    <Marker position={destinationLocation} icon={destinationIcon} zIndexOffset={1000}>
+                        <Popup className="font-bold">{destinationName || 'Destination'}</Popup>
+                    </Marker>
+                )}
 
                 {/* --- DAY PLANNER MODE LAYERS --- */}
 
